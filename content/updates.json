@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "category": "Panduan",
+    "title": "Cara Daftar KTP di Perdana Baru",
+    "slug": "cara-daftar-KTP-di-perdana-Baru.html",
+    "excerpt": "Langkah-langkah validasi identitas kartu seluler sesuai aturan terbaru pemerintah agar tetap aktif.",
+    "date": "23 Des 2025",
+    "image": "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=800&auto=format&fit=crop"
+  },
+  {
+    "id": 2,
+    "category": "Tips & Trik",
+    "title": "Tips Menghadapi Android Lemot",
+    "slug": "tips-menghadapi-android-lemot.html",
+    "excerpt": "Optimalkan performa smartphone kamu dengan membersihkan cache dan manajemen RAM yang tepat.",
+    "date": "20 Des 2025",
+    "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=800&auto=format&fit=crop"
+  },
+  {
+    "id": 3,
+    "category": "Tips & Trik",
+    "title": "Tips Menghadapi Android Lemot",
+    "slug": "tips-menghadapi-android-lemot.html",
+    "excerpt": "Optimalkan performa smartphone kamu dengan membersihkan cache dan manajemen RAM yang tepat.",
+    "date": "20 Des 2025",
+    "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=800&auto=format&fit=crop"
+  },
+  {
+    "id": 4,
+    "category": "Tips & Trik",
+    "title": "Tips Menghadapi Android Lemot",
+    "slug": "tips-menghadapi-android-lemot.html",
+    "excerpt": "Optimalkan performa smartphone kamu dengan membersihkan cache dan manajemen RAM yang tepat.",
+    "date": "20 Des 2025",
+    "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=800&auto=format&fit=crop"
+  }
+]

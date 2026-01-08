@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biru - Solusi Digital Terpercaya</title>
+    <meta name="description" content="Platform PPOB dan layanan digital modern untuk generasi mandiri.">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .pastel-gradient {
+            background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
+        }
+        .hero-gradient {
+            background: radial-gradient(circle at top right, #3b82f6 0%, #1e40af 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        /* Mobile Nav Shadow */
+        .nav-shadow { box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05); }
+        [x-cloak] { display: none !important; }
+
+        button{
+          cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900" x-data="landingPage()">
+
+    <nav class="hidden md:flex fixed top-0 w-full z-50 glass-card h-20 items-center justify-between px-12">
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                <i data-lucide="zap"></i>
+            </div>
+            <span class="text-2xl font-extrabold tracking-tight text-blue-900">BIRU</span>
+        </div>
+        <div class="flex gap-8 font-medium text-slate-600">
+            <a href="#home" class="hover:text-blue-600 transition">Beranda</a>
+            <a href="#how-to" class="hover:text-blue-600 transition">Cara Gabung</a>
+            <a href="#format" class="hover:text-blue-600 transition">Format Transaksi</a>
+            <a href="/daftar-harga.html" class="hover:text-blue-600 transition">Daftar Harga</a>
+        </div>
+        <button class="bg-blue-600 text-white px-6 py-2.5 rounded-full font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200">
+            Mulai Sekarang
+        </button>
+    </nav>
+
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md z-50 h-16 border-t border-slate-100 flex justify-around items-center px-4 nav-shadow">
+        <a href="#home" class="flex flex-col items-center text-blue-600">
+            <i data-lucide="home" class="w-5 h-5"></i>
+            <span class="text-[10px] font-bold mt-1">Beranda</span>
+        </a>
+        <a href="#how-to" class="flex flex-col items-center text-slate-400">
+            <i data-lucide="user-plus" class="w-5 h-5"></i>
+            <span class="text-[10px] font-medium mt-1">Gabung</span>
+        </a>
+        <a href="/daftar-harga.html" class="flex flex-col items-center text-slate-400">
+            <i data-lucide="list" class="w-5 h-5"></i>
+            <span class="text-[10px] font-medium mt-1">Harga</span>
+        </a>
+        <a href="#format" class="flex flex-col items-center text-slate-400">
+            <i data-lucide="message-square" class="w-5 h-5"></i>
+            <span class="text-[10px] font-medium mt-1">Format</span>
+        </a>
+    </nav>
+
+    <section id="home" class="hero-gradient pt-32 pb-20 md:pt-48 md:pb-40 px-6 text-white relative overflow-hidden">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center relative z-10">
+            <div data-aos="fade-up">
+                <span class="bg-blue-400/30 text-blue-100 px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide uppercase mb-6 inline-block">
+                    #SolusiDigitalMasaDepan
+                </span>
+                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6" x-text="content.hero.title"></h1>
+                <p class="text-lg md:text-xl text-blue-100 mb-10 leading-relaxed" x-text="content.hero.subtitle"></p>
+                <div class="flex flex-wrap gap-4">
+                    <button class="bg-white text-blue-600 px-8 py-4 rounded-2xl font-bold hover:bg-blue-50 transition shadow-xl">
+                        Gabung Gratis
+                    </button>
+                    <a href="#pricelist" class="border border-white/30 bg-white/10 backdrop-blur-md px-8 py-4 rounded-2xl font-bold hover:bg-white/20 transition">
+                        Cek Harga
+                    </a>
+                </div>
+            </div>
+            <div class="hidden md:block relative">
+                <div class="absolute -top-20 -right-20 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl"></div>
+                <div class="glass-card p-4 rounded-[2.5rem] shadow-2xl rotate-3">
+                    <img src="https://img.freepik.com/free-vector/digital-lifestyle-concept-illustration_114360-7327.jpg" alt="Hero Illustration" class="rounded-[2rem]">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 px-6 max-w-6xl mx-auto">
+        <div class="grid md:grid-cols-3 gap-12 items-center">
+            <div class="md:col-span-1">
+                <h2 class="text-3xl font-bold text-blue-900 mb-4">Tentang <span class="text-blue-600">Kami</span></h2>
+                <div class="w-20 h-1.5 bg-blue-600 rounded-full mb-6"></div>
+                <p class="text-slate-600 leading-relaxed" x-text="content.about.description"></p>
+            </div>
+            <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <template x-for="feature in content.about.strengths">
+                    <div class="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition">
+                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4">
+                            <i :data-lucide="feature.icon"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-slate-800" x-text="feature.title"></h3>
+                        <p class="text-slate-500 text-sm" x-text="feature.text"></p>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="py-20 bg-blue-50/50 px-6">
+        <div class="max-w-6xl mx-auto text-center mb-16">
+            <h2 class="text-3xl font-bold text-blue-900 mb-4">Produk Unggulan</h2>
+            <p class="text-slate-600">Layanan digital lengkap untuk segala kebutuhan harianmu.</p>
+        </div>
+        <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+            <template x-for="service in content.services">
+                <div class="bg-white p-6 rounded-[2rem] text-center border border-white hover:border-blue-200 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+                    <div class="w-16 h-16 mx-auto bg-blue-600 text-white rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-blue-200">
+                        <i :data-lucide="service.icon" class="p-2 w-12 h-12"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800" x-text="service.name"></h3>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <section id="updates" class="py-24 bg-white px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+                <div>
+                    <span class="text-blue-600 font-bold tracking-widest uppercase text-sm block mb-2">Informasi Terbaru</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-blue-900">Edukasi & <span class="text-blue-500">Update</span></h2>
+                </div>
+                <a href="/all-content.html" class="text-blue-600 font-bold flex items-center gap-2 hover:gap-4 transition-all">
+                    Lihat Semua Artikel <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <template x-for="post in updates" :key="post.id">
+                    <a :href="'/content/' + post.slug" class="group flex flex-col md:flex-row gap-6 p-4 rounded-[2rem] border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all duration-500">
+                        <div class="w-full md:w-48 h-48 rounded-2xl overflow-hidden flex-shrink-0 shadow-lg">
+                            <img :src="post.image" :alt="post.title" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        </div>
+                        <div class="flex flex-col justify-center pr-4">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="bg-blue-100 text-blue-600 text-[10px] font-bold px-3 py-1 rounded-full uppercase" x-text="post.category"></span>
+                                <span class="text-slate-400 text-xs" x-text="post.date"></span>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-blue-600 transition" x-text="post.title"></h3>
+                            <p class="text-slate-500 text-sm leading-relaxed mb-4 line-clamp-2" x-text="post.excerpt"></p>
+                            <span class="text-blue-600 font-bold text-sm flex items-center gap-1">
+                                Baca Selengkapnya <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </span>
+                        </div>
+                    </a>
+                </template>
+            </div>
+        </div>
+    </section>
+
+    <!-- <section id="pricelist" class="py-20 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
+                <div>
+                    <h2 class="text-3xl font-bold text-blue-900 mb-2">Daftar Harga Real-time</h2>
+                    <p class="text-slate-500">Harga kompetitif dengan pembaruan otomatis.</p>
+                </div>
+                <div class="w-full md:w-80">
+                    <div class="relative">
+                        <i data-lucide="search" class="absolute left-4 top-3.5 w-5 h-5 text-slate-400"></i>
+                        <input type="text" x-model="searchQuery" placeholder="Cari produk (contoh: Simpati)..." 
+                            class="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-[2rem] border border-slate-100 shadow-xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-slate-50 border-b border-slate-100">
+                            <tr>
+                                <th class="px-6 py-4 text-sm font-bold text-slate-600 uppercase tracking-wider">Kode</th>
+                                <th class="px-6 py-4 text-sm font-bold text-slate-600 uppercase tracking-wider">Deskripsi</th>
+                                <th class="px-6 py-4 text-sm font-bold text-slate-600 uppercase tracking-wider text-right">Harga / Fee</th>
+                                <th class="px-6 py-4 text-sm font-bold text-slate-600 uppercase tracking-wider text-center">Jenis</th>
+                                <th class="px-6 py-4 text-sm font-bold text-slate-600 uppercase tracking-wider text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            <template x-for="item in filteredPrices" :key="item.code">
+                                <tr class="hover:bg-blue-50/50 transition">
+                                    <td class="px-6 py-4 font-mono text-sm font-bold text-blue-600" x-text="item.code"></td>
+                                    <td class="px-6 py-4 text-slate-700 text-sm font-medium" x-text="item.description"></td>
+                                    <td class="px-6 py-4 text-right">
+                                        <span class="font-bold text-slate-900" x-text="'Rp ' + formatIDR(item.price)"></span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span :class="item.type === 'Prepaid' ? 'bg-indigo-50 text-indigo-600' : 'bg-emerald-50 text-emerald-600'" 
+                                            class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter" x-text="item.type"></span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <div class="flex items-center justify-start">
+                                            <div class="w-2 h-2 rounded-full mr-2" :class="item.status ? 'bg-emerald-500' : 'bg-red-500'"></div>
+                                            <span class="text-xs font-semibold" :class="item.status ? 'text-emerald-600' : 'text-red-600'" x-text="item.status ? 'Aktif' : 'Gangguan'"></span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+                <div x-show="isLoading" class="p-20 text-center">
+                    <div class="animate-spin inline-block w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mb-4"></div>
+                    <p class="text-slate-500">Memuat data harga...</p>
+                </div>
+            </div>
+        </div>
+    </section>-->
+    <section id="pricelist" class="py-20 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-blue-900 mb-2">Daftar Harga Real-time</h2>
+                <p class="text-slate-500 text-sm">Cari produk favoritmu dengan cepat dan mudah.</p>
+            </div>
+
+            <div class="bg-white p-4 rounded-[2rem] shadow-xl shadow-blue-50 border border-slate-100 mb-6">
+                <div class="flex flex-col md:flex-row gap-4 items-center">
+                    <div class="flex gap-x-2 bg-slate-100 p-1.5 rounded-2xl w-full md:w-auto">
+                        <button @click="activeTab = 'All'" 
+                            :class="activeTab === 'All' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'"
+                            class="px-6 py-2 rounded-xl text-sm font-bold transition-all flex-1 md:flex-none">Show All</button>
+                        <button @click="activeTab = 'Prepaid'" 
+                            :class="activeTab === 'Prepaid' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'"
+                            class="px-6 py-2 rounded-xl text-sm font-bold transition-all flex-1 md:flex-none">Prabayar</button>
+                        <button @click="activeTab = 'Postpaid'" 
+                            :class="activeTab === 'Postpaid' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'"
+                            class="px-6 py-2 rounded-xl text-sm font-bold transition-all flex-1 md:flex-none">Pascabayar</button>
+                    </div>
+                    
+                    <div class="relative flex-grow w-full">
+                        <i data-lucide="search" class="absolute left-4 top-3 w-5 h-5 text-slate-400"></i>
+                        <input type="text" x-model="searchQuery" placeholder="Cari produk (contoh: Simpati, PDAM...)" 
+                            class="w-full pl-12 pr-4 py-3 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-[2rem] border border-slate-100 shadow-xl overflow-hidden relative">
+                <div class="max-h-[500px] px-8 overflow-y-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="sticky top-0 bg-white shadow-sm z-10">
+                            <tr>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Kode</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Deskripsi</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Harga</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            <template x-for="item in filteredPrices" :key="item.code">
+                                <tr class="hover:bg-blue-50/50 transition-colors">
+                                    <td class="px-6 py-4 font-mono text-sm font-bold text-blue-600" x-text="item.code"></td>
+                                    <td class="px-6 py-4 text-slate-700 text-sm font-medium" x-text="item.description"></td>
+                                    <td class="px-6 py-4 text-right">
+                                        <span class="font-bold text-slate-900" x-text="item.type === 'Prepaid' ? 'Rp ' + formatIDR(item.price) : 'Fee Rp ' + formatIDR(item.price)"></span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <div class="flex items-center justify-start">
+                                            <div class="w-2 h-2 rounded-full mr-2" :class="item.status ? 'bg-emerald-500' : 'bg-red-500'"></div>
+                                            <span class="text-xs font-semibold" :class="item.status ? 'text-emerald-600' : 'text-red-600'" x-text="item.status ? 'Aktif' : 'Gangguan'"></span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="format" class="py-20 pastel-gradient px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-blue-900 mb-4">Kemudahan Transaksi</h2>
+                <p class="text-slate-600">Simpel, cepat, dan transparan dalam satu genggaman.</p>
+            </div>
+            <div class="space-y-6">
+                <template x-for="(flow, index) in content.flow">
+                    <div class="flex gap-6 items-start">
+                        <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex-shrink-0 flex items-center justify-center font-bold" x-text="index + 1"></div>
+                        <div class="bg-white p-6 rounded-3xl shadow-sm flex-grow">
+                            <h4 class="font-bold text-slate-800 mb-1" x-text="flow.title"></h4>
+                            <p class="text-slate-500 text-sm" x-text="flow.desc"></p>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-900 text-slate-400 py-20 px-6 pb-32 md:pb-20">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-4 gap-12">
+            <div class="md:col-span-2">
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+                        <i data-lucide="zap"></i>
+                    </div>
+                    <span class="text-xl font-bold text-white uppercase">Biru Digital</span>
+                </div>
+                <p class="mb-6 leading-relaxed max-w-sm">
+                    Penyedia layanan top-up, PPOB, dan pembayaran digital dengan sistem otomasi 24 jam. Aman, terpercaya, dan harga termurah.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition"><i data-lucide="instagram"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition"><i data-lucide="facebook"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition"><i data-lucide="twitter"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6">Navigasi</h4>
+                <ul class="space-y-4 text-sm">
+                    <li><a href="#how-to" class="hover:text-blue-500">Cara Bergabung</a></li>
+                    <li><a href="#pricelist" class="hover:text-blue-500">Daftar Harga</a></li>
+                    <li><a href="#format" class="hover:text-blue-500">Format Transaksi</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6">Bantuan</h4>
+                <p class="text-sm mb-2">WhatsApp CS: 0812-3456-7890</p>
+                <p class="text-sm">Email: help@biru.id</p>
+            </div>
+        </div>
+        <div class="max-w-6xl mx-auto border-t border-slate-800 mt-16 pt-8 text-center text-xs tracking-widest">
+            &copy; 2025 BIRU DIGITAL TECHNOLOGY. ALL RIGHTS RESERVED.
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+    <!--<script>
+        lucide.createIcons({
+          attrs: {
+            'stroke-width': 2,
+            stroke: '#333'
+          },
+          nameAttr: 'data-lucide'
+        });
+    </script>-->
+</body>
+</html>

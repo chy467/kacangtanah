@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Harga - Biru Digital</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }        
+        .glass-card-black { background: rgba(35, 35, 35, 0.8); backdrop-filter: blur(10px); }
+        .nav-shadow { box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05); }
+        [x-cloak] { display: none !important; }
+        
+        button{
+          cursor: pointer;
+        }
+    </style>
+
+</head>
+<body class="bg-slate-950 text-slate-900" x-data="daftarHarga()"> 
+
+    <nav class="hidden md:flex fixed top-0 w-full z-50 glass-card-black h-20 items-center justify-between px-12 border-b border-slate-600">
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                <i data-lucide="zap"></i>
+            </div>
+            <span class="text-2xl font-extrabold tracking-tight text-blue-500 uppercase">Biru</span>
+        </div>
+        <div class="flex gap-8 font-medium text-slate-100">
+            <a href="index.html" class="hover:text-blue-400 transition">Beranda</a>
+            <a href="index.html#how-to" class="hover:text-blue-400 transition">Cara Gabung</a>
+            <a href="index.html#format" class="hover:text-blue-400 transition">Format Transaksi</a>
+            <a href="index.html#pricelist" class="hover:text-blue-400 transition">Daftar Harga</a>
+        </div>
+
+        <button class="bg-blue-600 text-white px-6 py-2.5 rounded-full font-bold shadow-lg shadow-blue-900">Mulai Sekarang</button>
+    </nav>
+
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-950/80 backdrop-blur-md z-50 h-16 border-t border-slate-100 flex justify-around items-center px-4 nav-shadow">
+        <a href="index.html" class="flex flex-col items-center text-slate-400">
+            <i data-lucide="home" class="w-5 h-5"></i>
+            <span class="text-[10px] font-medium mt-1">Beranda</span>
+        </a>
+        <a href="index.html#how-to" class="flex flex-col items-center text-slate-400 text-bold">
+            <i data-lucide="user-plus" class="w-5 h-5"></i>
+            <span class="text-[10px] font-medium mt-1">Gabung</span>
+        </a>
+        <a href="index.html#pricelist" class="flex flex-col items-center text-blue-500/80">
+            <i data-lucide="list" class="w-5 h-5"></i>
+            <span class="text-[10px] font-medium mt-1">Harga</span>
+        </a>
+        <a href="index.html#format" class="flex flex-col items-center text-slate-400">
+            <i data-lucide="message-square" class="w-5 h-5"></i>
+            <span class="text-[10px] font-medium mt-1">Format</span>
+        </a>
+    </nav>
+
+    <header class="pt-32 pb-12 md:pt-44 md:pb-20 px-6 bg-blue-800 text-white relative overflow-hidden text-center">
+        <div class="max-w-4xl mx-auto relative z-10">
+            <h1 class="text-3xl md:text-5xl font-extrabold mb-4">Pricelist dan Kode Produk</h1>
+            <p class="text-blue-100 text-lg opacity-90">Realtime, <span class="text-sm italic">update: 24 Desember 2025<span></p>
+        </div>
+        <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+    </header>
+
+    <main class="max-w-5xl mx-auto py-12 px-6 pb-32">
+
+    <section id="pricelist" class="py-4 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="bg-slate-800 p-4 rounded-[2rem] shadow-xl shadow-blue-950 border border-slate-700 mb-6">
+                <div class="flex flex-col md:flex-row gap-4 items-center">
+                    <div class="flex gap-2 bg-slate-950 p-1.5 rounded-2xl w-full md:w-auto">
+                        <button @click="activeTab = 'All'" 
+                            :class="activeTab === 'All' ? 'bg-blue-700 text-white shadow-sm' : 'text-slate-100'"
+                            class="px-6 py-2 rounded-xl text-sm font-bold transition-all flex-1 md:flex-none">All</button>
+                        <button @click="activeTab = 'Prepaid'" 
+                            :class="activeTab === 'Prepaid' ? 'bg-blue-700 text-white shadow-sm' : 'text-slate-100'"
+                            class="px-6 py-2 rounded-xl text-sm font-bold transition-all flex-1 md:flex-none">Prabayar</button>
+                        <button @click="activeTab = 'Postpaid'" 
+                            :class="activeTab === 'Postpaid' ? 'bg-blue-700 text-white shadow-sm' : 'text-slate-100'"
+                            class="px-6 py-2 rounded-xl text-sm font-bold transition-all flex-1 md:flex-none">Pascabayar</button>
+                    </div>
+                    
+                    <div class="relative flex-grow w-full">
+                        <i data-lucide="search" class="absolute left-4 top-3 w-5 h-5 text-slate-400"></i>
+                        <input type="text" x-model="searchQuery" placeholder="Cari produk (contoh: Simpati, PDAM...)" 
+                            class="w-full pl-12 pr-4 py-3 bg-slate-200 border-none rounded-2xl focus:ring-2 focus:ring-slate-500 outline-none transition">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 rounded-[2rem] border border-slate-700 shadow-xl overflow-hidden relative">
+                <div class="max-h-[500px] px-8 overflow-y-auto custom-scrollbar">
+                    <table class="w-full px-10 text-left border-collapse">
+                        <thead class="sticky top-0 bg-slate-800 shadow-sm z-10">
+                            <tr>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Kode</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Deskripsi</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-right">Harga / Fee</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700">
+                            <template x-for="item in filteredPrices" :key="item.code">
+                                <tr class="hover:bg-slate-950/20 transition-colors">
+                                    <td class="px-6 py-4 font-mono text-xx font-bold text-blue-500" x-text="item.code"></td>
+                                    <td class="px-6 py-4 text-slate-50 text-xs font-medium" x-text="item.description"></td>
+                                    <td class="px-6 py-4 text-right">
+                                        <span class="font-bold text-slate-200 text-xs" x-text="item.type === 'Prepaid' ? 'Rp ' + formatIDR(item.price) : 'Rp ' + formatIDR(item.price)"></span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <div class="flex items-center justify-start">
+                                            <div class="w-2 h-2 rounded-full mr-2" :class="item.status ? 'text-emerald-600' : 'bg-red-600'"></div>
+                                            <span class="text-xs font-semibold" :class="item.status ? 'text-emerald-600' : 'bg-red-600'" x-text="item.status ? 'Aktif' : 'Gangguan'"></span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-slate-800 to-transparent pointer-events-none"></div>
+            </div>
+        </div>
+    </section>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-20 px-6 pb-32 md:pb-20">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-4 gap-12 text-left">
+            <div class="md:col-span-2">
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+                        <i data-lucide="zap"></i>
+                    </div>
+                    <span class="text-xl font-bold text-white uppercase">Biru Digital</span>
+                </div>
+                <p class="mb-6 leading-relaxed max-w-sm">Penyedia layanan top-up, PPOB, dan pembayaran digital dengan sistem otomasi 24 jam. Aman, terpercaya, dan harga termurah.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6">Navigasi</h4>
+                <ul class="space-y-4 text-sm">
+                    <li><a href="index.html#home" class="hover:text-blue-500">Beranda</a></li>
+                    <li><a href="index.html#how-to" class="hover:text-blue-500">Cara Bergabung</a></li>
+                    <li><a href="index.html#pricelist" class="hover:text-blue-500">Daftar Harga</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6">Bantuan</h4>
+                <p class="text-sm mb-2">WhatsApp CS: 0812-3456-7890</p>
+                <p class="text-sm">Email: help@biru.id</p>
+            </div>
+        </div>
+        <div class="max-w-6xl mx-auto border-t border-slate-800 mt-16 pt-8 text-center text-xs tracking-widest uppercase">
+            &copy; 2025 BIRU DIGITAL TECHNOLOGY. ALL RIGHTS RESERVED.
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script>
+        function daftarHarga() {
+            return {
+                prices: [],
+                update: [],
+                searchQuery: '',
+                isLoading: true,
+                activeTab: 'All',
+
+                async init() {
+                    // Fetch data
+                    console.log('test');
+                    try {
+                        this.prices = await PriceService.fetchPrices();
+                    } catch (err) {
+                        console.error("Gagal memuat harga:", err);
+                    } finally {
+                        this.isLoading = false;
+                    }
+                },
+
+                get filteredPrices() {
+                    const q = this.searchQuery.trim().toLowerCase();
+
+                    return this.prices.filter(item => {
+                        const type = item.type || '';
+                        const code = (item.code || '').toLowerCase();
+                        const desc = (item.description || '').toLowerCase();
+
+                        const matchesTab = this.activeTab === type || this.activeTab === 'All';
+                        const matchesSearch = !q || code.includes(q) || desc.includes(q); 
+
+                        return matchesTab && matchesSearch;
+                    });
+                },
+
+                formatIDR(val) {
+                    return new Intl.NumberFormat('id-ID').format(val);
+                }
+            }
+        }
+
+        function themeManager() {
+            return {
+                open: false,
+                theme: localStorage.theme || 'system',
+                
+                toggleMenu() { this.open = !this.open },
+
+                setTheme(mode) {
+                    this.theme = mode;
+                    this.open = false;
+                    
+                    if (mode === 'system') {
+                        localStorage.removeItem('theme');
+                        this.applySystemTheme();
+                    } else {
+                        localStorage.theme = mode;
+                        this.applyTheme(mode);
+                    }
+                    // Re-render icons
+                    this.$nextTick(() => lucide.createIcons());
+                },
+
+                applyTheme(mode) {
+                    if (mode === 'dark') {
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                    }
+                },
+
+                applySystemTheme() {
+                    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                    }
+                }
+            }
+        }
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>
