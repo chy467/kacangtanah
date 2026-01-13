@@ -278,8 +278,8 @@
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         <div class="flex items-center justify-start">
-                                            <div class="w-2 h-2 rounded-full mr-2" :class="item.status ? 'bg-emerald-500' : 'bg-red-500'"></div>
-                                            <span class="text-xs font-semibold" :class="item.status ? 'text-emerald-600' : 'text-red-600'" x-text="item.status ? 'Aktif' : 'Gangguan'"></span>
+                                            <div class="w-2 h-2 rounded-full mr-2" :class="item.status ? 'bg-red-500' : 'bg-emerald-500'"></div>
+                                            <span class="text-xs font-semibold" :class="item.status ? 'text-red-600' : 'text-emerald-600'" x-text="item.status ? 'Gangguan' : 'Aktiv'"></span>
                                         </div>
                                     </td>
                                 </tr>
@@ -306,6 +306,25 @@
                         <div class="bg-white p-6 rounded-3xl shadow-sm flex-grow">
                             <h4 class="font-bold text-slate-800 mb-1" x-text="flow.title"></h4>
                             <p class="text-slate-500 text-sm" x-text="flow.desc"></p>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </section>
+        <section id="how-to" class="py-20 pastel-gradient px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-blue-900 mb-4">Cara Bertransaksi</h2>
+                <p class="text-slate-600">Simpel, cepat, dan transparan dalam satu genggaman.</p>
+            </div>
+            <div class="space-y-6">
+                <template x-for="(howTo, index) in content.howTo">
+                    <div class="flex gap-6 items-start">
+                        <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex-shrink-0 flex items-center justify-center font-bold" x-text="index + 1"></div>
+                        <div class="bg-white p-6 rounded-3xl shadow-sm flex-grow">
+                            <h4 class="font-bold text-slate-800 mb-1" x-text="howTo.title"></h4>
+                            <p class="text-slate-500 text-sm" x-text="howTo.desc"></p>
                         </div>
                     </div>
                 </template>
@@ -341,8 +360,10 @@
             </div>
             <div>
                 <h4 class="text-white font-bold mb-6">Bantuan</h4>
-                <p class="text-sm mb-2">WhatsApp CS: 0812-3456-7890</p>
-                <p class="text-sm">Email: help@biru.id</p>
+                <p class="text-sm mb-2">WhatsApp CS: 0878-5843-6222</p>
+                <div class="border rounded-3xl overflow-hidden">
+                    <a href="https://wa.me/message/KKGWEERMRHSNM1" target="_blank" rel="noopener noreferrer"><img class="scale-180 aspect-square object-cover " src="/assets/whatsapp.webp"></a>
+                </div>
             </div>
         </div>
         <div class="max-w-6xl mx-auto border-t border-slate-800 mt-16 pt-8 text-center text-xs tracking-widest">

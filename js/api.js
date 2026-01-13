@@ -14,7 +14,7 @@ const PriceService = (() => {
         status: item[4]
     }));
 
-    const API_URL = 'http://localhost:3000/api/pricelist'; 
+    const API_URL = '/api/pricelist'; 
     
     const API_CONFIG = {
         headers: {
@@ -45,13 +45,12 @@ const PriceService = (() => {
          * @returns {Promise<Array>}
          */
         async fetchPrices() {
-/*          if (!_mockDatabase || _mockDatabase.length === 0 ) {
+        /*  if (!_mockDatabase || _mockDatabase.length === 0 ) {
             return new Promise((resolve) => {
                 setTimeout(() => {
                     resolve(_mapData(_mockDatabase));
                 }, 800);
-            });
-          } */
+            }); */
             try {
                 const response = await fetch(API_URL, {
                     method: 'GET',
@@ -66,12 +65,11 @@ const PriceService = (() => {
                 const data = await response.json();
                 
                 const items = Array.isArray(data) ? data : data.data;
-                console.log(items)
+                
                 return _mapToViewModel(items);
 
             } catch (error) {
-                console.error("PriceService Error:", error.message);
-                
+                console.error("PriceService Error:", error.message);                
                 return [];
                 
             }

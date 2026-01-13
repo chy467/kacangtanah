@@ -32,16 +32,20 @@ function landingPage() {
         },
 
         // Filter pencarian harga
-        get filteredPrices() {
-            return this.prices.filter(item => {
-                const matchesTab = item.type === this.activeTab || this.activeTab === 'All';
-                
-                const matchesSearch = item.description.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
-                                     item.code.toLowerCase().includes(this.searchQuery.toLowerCase());
-                
-                return matchesTab && matchesSearch;
-            });
-        },
+                get filteredPrices() {
+                    const q = this.searchQuery.trim().toLowerCase();
+
+                    return this.prices.filter(item => {
+                        const type = item.type || '';
+                        const code = (item.code || '').toLowerCase();
+                        const desc = (item.description || '').toLowerCase();
+
+                        const matchesTab = this.activeTab === type || this.activeTab === 'All';
+                        const matchesSearch = !q || code.includes(q) || desc.includes(q); 
+
+                        return matchesTab && matchesSearch;
+                    });
+                },
 
         async fetchUpdates() {
             const response = await fetch('./content/updates.json');

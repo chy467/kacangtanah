@@ -29,5 +29,10 @@ const CONTENT_DATA = {
         { title: 'Daftar Akun', desc: 'Download aplikasi atau daftar via WhatsApp CS kami secara gratis.' },
         { title: 'Topup Saldo', desc: 'Isi saldo via Bank Transfer, E-wallet, atau Alfamart/Indomaret.' },
         { title: 'Mulai Transaksi', desc: 'Gunakan saldo untuk beli produk atau bayar tagihan pelangganmu.' }
+    ],
+    howTo: [
+        { title: 'Isi Ulang Pulsa', desc: '<Kode_Produk>.<Tujuan>.<Pin>' },
+        { title: 'Cek Harga', desc: 'Isi saldo via Bank Transfer, E-wallet, atau Alfamart/Indomaret.' },
+        { title: 'Mulai Transaksi', desc: 'Gunakan saldo untuk beli produk atau bayar tagihan pelangganmu.' }
     ]
 };
