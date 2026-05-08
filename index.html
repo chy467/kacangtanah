@@ -149,7 +149,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <template x-for="post in updates" :key="post.id">
-                    <a :href="'/content/' + post.slug" class="group flex flex-col md:flex-row gap-6 p-4 rounded-[2rem] border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all duration-500">
+                    <a :href="'/kacangtanah/content/' + post.slug" class="group flex flex-col md:flex-row gap-6 p-4 rounded-[2rem] border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all duration-500">
                         <div class="w-full md:w-48 h-48 rounded-2xl overflow-hidden flex-shrink-0 shadow-lg">
                             <img :src="post.image" :alt="post.title" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                         </div>
@@ -362,7 +362,7 @@
                 <h4 class="text-white font-bold mb-6">Bantuan</h4>
                 <p class="text-sm mb-2">WhatsApp CS: 0878-5843-6222</p>
                 <div class="border rounded-3xl overflow-hidden">
-                    <a href="https://wa.me/message/KKGWEERMRHSNM1" target="_blank" rel="noopener noreferrer"><img class="scale-180 aspect-square object-cover " src="/assets/whatsapp.webp"></a>
+                    <a href="https://wa.me/message/KKGWEERMRHSNM1" target="_blank" rel="noopener noreferrer"><img class="scale-180 aspect-square object-cover " src="/kacangtanah/assets/whatsapp.webp"></a>
                 </div>
             </div>
         </div>
@@ -371,9 +371,9 @@
         </div>
     </footer>
 
-    <script src="js/api.js"></script>
-    <script src="js/data.js"></script>
-    <script src="js/app.js"></script>
+    <script src="/kacangtanah/js/api.js"></script>
+    <script src="/kacangtanah/js/data.js"></script>
+    <script src="/kacangtanah/js/app.js"></script>
     <!--<script>
         lucide.createIcons({
           attrs: {
