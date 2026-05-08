@@ -61,7 +61,7 @@
             <i data-lucide="user-plus" class="w-5 h-5"></i>
             <span class="text-[10px] font-medium mt-1">Gabung</span>
         </a>
-        <a href="/daftar-harga.html" class="flex flex-col items-center text-slate-400">
+        <a href="/kacangtanah/daftar-harga.html" class="flex flex-col items-center text-slate-400">
             <i data-lucide="list" class="w-5 h-5"></i>
             <span class="text-[10px] font-medium mt-1">Harga</span>
         </a>
@@ -314,17 +314,20 @@
     </section>
         <section id="how-to" class="py-20 pastel-gradient px-6">
         <div class="max-w-4xl mx-auto">
-            <div class="text-center mb-16">
+            <div class="text-center mb-8">
                 <h2 class="text-3xl font-bold text-blue-900 mb-4">Cara Bertransaksi</h2>
                 <p class="text-slate-600">Simpel, cepat, dan transparan dalam satu genggaman.</p>
             </div>
-            <div class="space-y-6">
+            <div class="space-y-6 items-start bg-white p-6 rounded-3xl shadow-sm">
                 <template x-for="(howTo, index) in content.howTo">
-                    <div class="flex gap-6 items-start">
-                        <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex-shrink-0 flex items-center justify-center font-bold" x-text="index + 1"></div>
-                        <div class="bg-white p-6 rounded-3xl shadow-sm flex-grow">
+                    <div class="flex gap-6 ">
+                        <div class="flex-shrink-0 flex font-bold" x-text="index + 1 +'.'"></div>
+                        <div class="flex-grow">
                             <h4 class="font-bold text-slate-800 mb-1" x-text="howTo.title"></h4>
-                            <p class="text-slate-500 text-sm" x-text="howTo.desc"></p>
+                            <p class="text-slate-700 text-md" x-text="howTo.accFormat"></p>
+                            <template x-for="item in howTo.desc" :key="item">
+                                <p class="text-slate-400 text-sm" x-text="item"></p>
+                            </template>
                         </div>
                     </div>
                 </template>
@@ -362,7 +365,7 @@
                 <h4 class="text-white font-bold mb-6">Bantuan</h4>
                 <p class="text-sm mb-2">WhatsApp CS: 0878-5843-6222</p>
                 <div class="border rounded-3xl overflow-hidden">
-                    <a href="https://wa.me/message/KKGWEERMRHSNM1" target="_blank" rel="noopener noreferrer"><img class="scale-180 aspect-square object-cover " src="/assets/whatsapp.webp"></a>
+                    <a href="https://wa.me/message/KKGWEERMRHSNM1" target="_blank" rel="noopener noreferrer"><img class="scale-180 aspect-square object-cover " src="/kacangtanah/assets/whatsapp.webp"></a>
                 </div>
             </div>
         </div>
@@ -371,9 +374,9 @@
         </div>
     </footer>
 
-    <script src="js/api.js"></script>
-    <script src="js/data.js"></script>
-    <script src="js/app.js"></script>
+    <script src="/kacangtanah/js/api.js"></script>
+    <script src="/kacangtanah/js/data.js"></script>
+    <script src="/kacangtanah/js/app.js"></script>
     <!--<script>
         lucide.createIcons({
           attrs: {

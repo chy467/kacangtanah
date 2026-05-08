@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Biru Digital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        button {cursor: pointer;}
+        [x-cloak] { display: none !important; }
+
+        .glass { background: rgba(255,255,255,0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.4); }
+        .input-base {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: 1.5px solid #e2e8f0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.9rem;
+            color: #1e293b;
+            background: #f8fafc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        .input-base:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); background: #fff; }
+        textarea.input-base { resize: vertical; min-height: 200px; line-height: 1.7; }
+
+        /* Article preview styles */
+        .preview-content p { margin-bottom: 1.2rem; line-height: 1.8; color: #475569; }
+        .preview-content h2 { font-size: 1.3rem; font-weight: 700; color: #1e3a8a; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .preview-content ul { list-style: disc; margin-left: 1.5rem; margin-bottom: 1.2rem; color: #475569; }
+        .preview-content li { margin-bottom: 0.4rem; }
+        .preview-content strong { color: #1e293b; }
+
+        /* Tab styles */
+        .tab-btn { transition: all 0.2s; }
+        .tab-btn.active { background: #2563eb; color: white; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+
+        /* Notification */
+        @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .notif { animation: slideIn 0.3s ease; }
+
+        /* Article list cards */
+        .article-card:hover { border-color: #bfdbfe; box-shadow: 0 4px 16px rgba(59,130,246,0.1); }
+
+        /* Category badge colors */
+        .badge-panduan { background: #dbeafe; color: #1d4ed8; }
+        .badge-tips { background: #dcfce7; color: #15803d; }
+        .badge-promo { background: #fef9c3; color: #854d0e; }
+        .badge-info { background: #f3e8ff; color: #7e22ce; }
+        .badge-lainnya { background: #f1f5f9; color: #475569; }
+
+        .drag-area { border: 2px dashed #bfdbfe; border-radius: 1rem; transition: all 0.2s; }
+        .drag-area:hover { border-color: #3b82f6; background: #eff6ff; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen" x-data="adminPanel()" x-init="init()">
+
+    <!-- Notification Toast -->
+    <div x-show="notif.show" x-cloak class="fixed top-6 right-6 z-50 notif">
+        <div :class="notif.type === 'success' ? 'bg-emerald-500' : 'bg-red-500'" 
+             class="text-white px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3">
+            <i :data-lucide="notif.type === 'success' ? 'check-circle' : 'x-circle'" class="w-5 h-5"></i>
+            <span class="font-semibold text-sm" x-text="notif.message"></span>
+        </div>
+    </div>
+
+    <!-- Sidebar + Main layout -->
+    <div class="flex min-h-screen">
+
+        <!-- Sidebar -->
+        <aside class="w-64 bg-blue-900 text-white flex flex-col min-h-screen fixed left-0 top-0 z-40">
+            <div class="p-6 border-b border-blue-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <i data-lucide="zap" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <div class="font-extrabold tracking-tight text-lg">BIRU</div>
+                        <div class="text-blue-300 text-[11px] font-medium">Admin Panel</div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex-1 p-4 space-y-1">
+                <button @click="tab = 'list'" :class="tab === 'list' ? 'bg-blue-700 text-white' : 'text-blue-300 hover:text-white hover:bg-blue-800'" 
+                        class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition text-sm">
+                    <i data-lucide="layout-list" class="w-4 h-4"></i>
+                    Daftar Artikel
+                    <span class="ml-auto bg-blue-600 text-xs px-2 py-0.5 rounded-full" x-text="articles.length"></span>
+                </button>
+                <button @click="newArticle(); tab = 'editor'" :class="tab === 'editor' ? 'bg-blue-700 text-white' : 'text-blue-300 hover:text-white hover:bg-blue-800'" 
+                        class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition text-sm">
+                    <i data-lucide="file-plus" class="w-4 h-4"></i>
+                    Artikel Baru
+                </button>
+                <button @click="tab = 'export'" :class="tab === 'export' ? 'bg-blue-700 text-white' : 'text-blue-300 hover:text-white hover:bg-blue-800'" 
+                        class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition text-sm">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    Export & Deploy
+                </button>
+            </nav>
+
+            <div class="p-4 border-t border-blue-800">
+                <a href="index.html" class="flex items-center gap-3 text-blue-300 hover:text-white px-4 py-3 rounded-xl transition text-sm font-medium">
+                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                    Lihat Website
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="ml-64 flex-1 p-8">
+
+            <!-- ===== DAFTAR ARTIKEL ===== -->
+            <div x-show="tab === 'list'" x-cloak>
+                <div class="mb-8">
+                    <h1 class="text-2xl font-extrabold text-blue-900">Daftar Artikel</h1>
+                    <p class="text-slate-500 mt-1 text-sm">Kelola semua artikel dan konten yang ada di website.</p>
+                </div>
+
+                <!-- Import JSON area -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 mb-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2 text-sm font-bold text-slate-700">
+                            <i data-lucide="upload" class="w-4 h-4 text-blue-500"></i>
+                            Import dari updates.json yang ada
+                        </div>
+                    </div>
+                    <div class="drag-area p-6 text-center cursor-pointer" @click="$refs.jsonImport.click()"
+                         @dragover.prevent="$el.classList.add('border-blue-500','bg-blue-50')"
+                         @dragleave.prevent="$el.classList.remove('border-blue-500','bg-blue-50')"
+                         @drop.prevent="$el.classList.remove('border-blue-500','bg-blue-50'); importJSON({target:{files:$event.dataTransfer.files}})">
+                        <i data-lucide="file-json" class="w-8 h-8 text-blue-400 mx-auto mb-2"></i>
+                        <p class="text-sm text-slate-500">Klik atau drag & drop file <strong>updates.json</strong> ke sini</p>
+                        <input type="file" accept=".json" class="hidden" x-ref="jsonImport" @change="importJSON($event)">
+                    </div>
+                </div>
+
+                <!-- Article grid -->
+                <div x-show="articles.length === 0" class="bg-white rounded-2xl border border-dashed border-slate-200 p-16 text-center">
+                    <i data-lucide="inbox" class="w-12 h-12 text-slate-300 mx-auto mb-4"></i>
+                    <p class="text-slate-400 font-medium">Belum ada artikel. Import JSON atau buat yang baru!</p>
+                    <button @click="newArticle(); tab = 'editor'" class="mt-4 bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-blue-700 transition">
+                        + Buat Artikel Baru
+                    </button>
+                </div>
+
+                <div class="grid gap-4" x-show="articles.length > 0">
+                    <template x-for="(art, idx) in articles" :key="art.id">
+                        <div class="article-card bg-white rounded-2xl border border-slate-100 p-5 flex items-start gap-5 transition cursor-default overflow-hidden">
+                            <img :src="art.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=200&q=60'" 
+                                 class="w-20 h-20 object-cover rounded-xl flex-shrink-0 bg-slate-100">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span :class="getCategoryBadge(art.category)" class="text-[11px] font-bold px-3 py-0.5 rounded-full uppercase tracking-wide" x-text="art.category"></span>
+                                    <span class="text-slate-400 text-xs" x-text="art.date"></span>
+                                </div>
+                                <h3 class="font-bold text-slate-800 leading-snug mb-1" x-text="art.title"></h3>
+                                <p class="text-slate-500 text-sm truncate" x-text="art.excerpt"></p>
+                                <p class="text-blue-400 text-xs mt-1 font-mono truncate overflow-hidden" x-text="'content/' + art.slug"></p>
+                            </div>
+                            <div class="flex gap-2 flex-shrink-0">
+                                <button @click="editArticle(idx)" class="w-9 h-9 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center hover:bg-blue-100 transition">
+                                    <i data-lucide="pencil" class="w-4 h-4"></i>
+                                </button>
+                                <button @click="deleteArticle(idx)" class="w-9 h-9 bg-red-50 text-red-500 rounded-xl flex items-center justify-center hover:bg-red-100 transition">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- ===== EDITOR ===== -->
+            <div x-show="tab === 'editor'" x-cloak>
+                <div class="mb-8 flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-extrabold text-blue-900" x-text="editIndex === null ? 'Artikel Baru' : 'Edit Artikel'"></h1>
+                        <p class="text-slate-500 mt-1 text-sm">Isi form di bawah, lalu preview dan download hasilnya.</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button @click="tab = 'preview'" class="flex items-center gap-2 bg-white border border-slate-200 text-slate-600 px-4 py-2.5 rounded-xl font-semibold text-sm hover:border-blue-300 transition">
+                            <i data-lucide="eye" class="w-4 h-4"></i> Preview
+                        </button>
+                        <button @click="saveArticle()" class="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-blue-700 transition shadow-lg shadow-blue-200">
+                            <i data-lucide="save" class="w-4 h-4"></i> Simpan Artikel
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-6">
+                    <!-- Left: main form -->
+                    <div class="col-span-2 space-y-5">
+                        <div class="bg-white rounded-2xl border border-slate-100 p-6 space-y-5">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Judul Artikel *</label>
+                                <input type="text" x-model="form.title" @input="autoSlug()" placeholder="Contoh: Cara Daftar KTP di Perdana Baru..." class="input-base">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Ringkasan (Excerpt) *</label>
+                                <textarea x-model="form.excerpt" placeholder="Deskripsi singkat artikel, tampil di halaman utama..." class="input-base" style="min-height:90px"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Isi Artikel *</label>
+                                <div class="mb-2 flex gap-2 flex-wrap">
+                                    <button @click="insertTag('<p>', '</p>')" class="text-xs bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-600 px-3 py-1 rounded-lg font-medium transition">P</button>
+                                    <button @click="insertTag('<h2>', '</h2>')" class="text-xs bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-600 px-3 py-1 rounded-lg font-bold transition">H2</button>
+                                    <button @click="insertTag('<strong>', '</strong>')" class="text-xs bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-600 px-3 py-1 rounded-lg font-medium transition"><strong>B</strong></button>
+                                    <button @click="insertTag('<ul>\n  <li>', '</li>\n  <li>item lain</li>\n</ul>')" class="text-xs bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-600 px-3 py-1 rounded-lg font-medium transition">List</button>
+                                    <button @click="insertCodeBlock()" class="text-xs bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-600 px-3 py-1 rounded-lg font-medium transition">Code Block</button>
+                                    <button @click="insertImage()" class="text-xs bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-600 px-3 py-1 rounded-lg font-medium transition">🖼 Img</button>
+                                    <span class="text-slate-300 text-xs self-center">— HTML inline diizinkan</span>
+                                </div>
+                                <textarea x-model="form.body" x-ref="bodyEditor" placeholder="<p>Tulis konten artikel di sini...</p>&#10;<h2>Subjudul</h2>&#10;<p>Paragraf berikutnya...</p>" class="input-base font-mono text-sm" style="min-height:360px"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: meta -->
+                    <div class="space-y-5">
+                        <div class="bg-white rounded-2xl border border-slate-100 p-6 space-y-4">
+                            <h3 class="font-bold text-slate-800 text-sm">Informasi Artikel</h3>
+
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Kategori *</label>
+                                <select x-model="form.category" class="input-base">
+                                    <option value="">-- Pilih Kategori --</option>
+                                    <option value="Panduan">Panduan</option>
+                                    <option value="Tips & Trik">Tips & Trik</option>
+                                    <option value="Promo">Promo</option>
+                                    <option value="Info">Info</option>
+                                    <option value="Edukasi">Edukasi</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal</label>
+                                <input type="date" x-model="form.dateRaw" class="input-base">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Estimasi Baca (menit)</label>
+                                <input type="number" x-model="form.readTime" min="1" max="60" class="input-base" style="width:100px">
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-2xl border border-slate-100 p-6 space-y-4">
+                            <h3 class="font-bold text-slate-800 text-sm">Gambar & URL</h3>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">URL Gambar Cover</label>
+                                <input type="url" x-model="form.image" placeholder="https://images.unsplash.com/..." class="input-base">
+                                <div x-show="form.image" class="mt-2 rounded-xl overflow-hidden">
+                                    <img :src="form.image" class="w-full h-28 object-cover" @error="$el.style.display='none'">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Slug (nama file HTML)</label>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-slate-400 text-xs font-mono">content/</span>
+                                    <input type="text" x-model="form.slug" placeholder="nama-artikel.html" class="input-base flex-1" style="font-family:monospace; font-size:0.8rem">
+                                </div>
+                                <p class="text-slate-400 text-xs mt-1">Auto-generate dari judul, bisa diubah manual.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 rounded-2xl border border-blue-100 p-4">
+                            <p class="text-xs text-blue-600 font-semibold mb-3">💡 Setelah simpan, pergi ke tab <strong>Export & Deploy</strong> untuk download file-nya.</p>
+                            <button @click="saveArticle(); tab = 'export'" class="w-full bg-blue-600 text-white py-2.5 rounded-xl font-bold text-sm hover:bg-blue-700 transition">
+                                Simpan & Export →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== PREVIEW ===== -->
+            <div x-show="tab === 'preview'" x-cloak>
+                <div class="mb-6 flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-extrabold text-blue-900">Preview Artikel</h1>
+                        <p class="text-slate-500 mt-1 text-sm">Tampilan artikel sebelum di-publish.</p>
+                    </div>
+                    <button @click="tab = 'editor'" class="flex items-center gap-2 bg-white border border-slate-200 text-slate-600 px-4 py-2.5 rounded-xl font-semibold text-sm hover:border-blue-300 transition">
+                        <i data-lucide="pencil" class="w-4 h-4"></i> Kembali Edit
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden max-w-3xl mx-auto">
+                    <!-- Header preview -->
+                    <div class="bg-blue-900 text-white p-4 text-xs font-mono flex items-center gap-2 opacity-70">
+                        <i data-lucide="globe" class="w-3 h-3"></i>
+                        <span>kacangtanah.com/content/<span x-text="form.slug || 'artikel.html'"></span></span>
+                    </div>
+
+                    <div class="p-8">
+                        <div class="text-center mb-8">
+                            <span x-show="form.category" :class="getCategoryBadge(form.category)" class="text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest inline-block mb-4" x-text="form.category"></span>
+                            <h1 class="text-3xl font-extrabold text-slate-900 leading-tight mb-4" x-text="form.title || '(Judul belum diisi)'"></h1>
+                            <div class="flex items-center justify-center gap-4 text-slate-400 text-sm">
+                                <span x-text="formatDisplayDate(form.dateRaw)"></span>
+                                <span x-show="form.readTime">· <span x-text="form.readTime"></span> Menit Baca</span>
+                            </div>
+                        </div>
+
+                        <div x-show="form.image" class="rounded-2xl overflow-hidden mb-8">
+                            <img :src="form.image" class="w-full h-56 object-cover" @error="$el.parentElement.style.display='none'">
+                        </div>
+
+                        <div class="preview-content text-base" x-html="form.body || '<p class=\'text-slate-300\'>Isi artikel belum diisi...</p>'"></div>
+
+                        <div class="mt-8 pt-6 border-t border-slate-100">
+                            <p class="text-xs text-slate-300 font-mono">excerpt: <span x-text="form.excerpt"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== EXPORT ===== -->
+            <div x-show="tab === 'export'" x-cloak>
+                <div class="mb-8">
+                    <h1 class="text-2xl font-extrabold text-blue-900">Export & Deploy</h1>
+                    <p class="text-slate-500 mt-1 text-sm">Download file hasil dan letakkan di folder project-mu.</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6 mb-8">
+                    <!-- updates.json card -->
+                    <div class="bg-white rounded-2xl border border-slate-100 p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center">
+                                <i data-lucide="file-json" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-slate-800">updates.json</div>
+                                <div class="text-sm text-slate-500">Data semua artikel</div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 rounded-xl p-3 mb-4 font-mono text-xs text-slate-500 overflow-auto max-h-32" x-text="JSON.stringify(articles.map(a=>({id:a.id,category:a.category,title:a.title,slug:a.slug,excerpt:a.excerpt,date:a.date,image:a.image})), null, 2)"></div>
+                        <p class="text-xs text-slate-400 mb-4">Simpan ke: <code class="bg-slate-100 px-1 py-0.5 rounded">content/updates.json</code></p>
+                        <button @click="downloadJSON()" class="w-full flex items-center justify-center gap-2 bg-emerald-500 text-white py-3 rounded-xl font-bold hover:bg-emerald-600 transition shadow-lg shadow-emerald-100">
+                            <i data-lucide="download" class="w-4 h-4"></i> Download updates.json
+                        </button>
+                    </div>
+
+                    <!-- HTML article card -->
+                    <div class="bg-white rounded-2xl border border-slate-100 p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center">
+                                <i data-lucide="file-code-2" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-slate-800" x-text="form.slug || 'artikel.html'"></div>
+                                <div class="text-sm text-slate-500">File artikel HTML</div>
+                            </div>
+                        </div>
+
+                        <div x-show="!form.title" class="bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-4">
+                            <p class="text-yellow-700 text-xs font-medium">⚠️ Buka tab Editor dulu untuk mengisi artikel yang ingin di-download.</p>
+                        </div>
+
+                        <template x-if="form.title">
+                            <div>
+                                <div class="bg-slate-50 rounded-xl p-3 mb-4">
+                                    <p class="text-xs font-semibold text-slate-700 mb-1">File akan dibuat:</p>
+                                    <p class="font-mono text-xs text-blue-600">content/<span x-text="form.slug"></span></p>
+                                    <p class="text-xs text-slate-500 mt-1" x-text="'Judul: ' + form.title"></p>
+                                </div>
+                                <p class="text-xs text-slate-400 mb-4">Simpan ke: <code class="bg-slate-100 px-1 py-0.5 rounded">content/</code> folder</p>
+                            </div>
+                        </template>
+
+                        <button @click="downloadHTML()" :disabled="!form.title" 
+                                :class="form.title ? 'bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-100' : 'bg-slate-200 text-slate-400 cursor-not-allowed'"
+                                class="w-full flex items-center justify-center gap-2 text-white py-3 rounded-xl font-bold transition">
+                            <i data-lucide="download" class="w-4 h-4"></i> Download HTML Artikel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Instructions -->
+                <div class="bg-blue-900 text-white rounded-2xl p-6">
+                    <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                        <i data-lucide="terminal" class="w-5 h-5 text-blue-300"></i>
+                        Cara Deploy ke GitHub
+                    </h3>
+                    <div class="space-y-3 text-sm text-blue-100">
+                        <div class="flex gap-3">
+                            <span class="w-6 h-6 bg-blue-700 rounded-full text-xs flex items-center justify-center flex-shrink-0 font-bold mt-0.5">1</span>
+                            <span>Download kedua file di atas (<code class="bg-blue-800 px-1.5 py-0.5 rounded text-blue-200">updates.json</code> dan file HTML artikel)</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <span class="w-6 h-6 bg-blue-700 rounded-full text-xs flex items-center justify-center flex-shrink-0 font-bold mt-0.5">2</span>
+                            <span>Pindahkan file HTML ke folder <code class="bg-blue-800 px-1.5 py-0.5 rounded text-blue-200">content/</code> di project kamu</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <span class="w-6 h-6 bg-blue-700 rounded-full text-xs flex items-center justify-center flex-shrink-0 font-bold mt-0.5">3</span>
+                            <span>Ganti file <code class="bg-blue-800 px-1.5 py-0.5 rounded text-blue-200">content/updates.json</code> dengan yang baru</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <span class="w-6 h-6 bg-blue-700 rounded-full text-xs flex items-center justify-center flex-shrink-0 font-bold mt-0.5">4</span>
+                            <span>Git commit & push: <code class="bg-blue-800 px-1.5 py-0.5 rounded text-blue-200 font-mono">git add . && git commit -m "add artikel baru" && git push</code></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+<script>
+function adminPanel() {
+    return {
+        tab: 'list',
+        articles: [],
+        editIndex: null,
+        form: {
+            title: '',
+            excerpt: '',
+            body: '',
+            category: '',
+            dateRaw: new Date().toISOString().split('T')[0],
+            readTime: 5,
+            image: '',
+            slug: ''
+        },
+        notif: { show: false, message: '', type: 'success' },
+
+        init() {
+            // Try loading from localStorage
+            const saved = localStorage.getItem('biruAdmin_articles');
+            if (saved) {
+                try { this.articles = JSON.parse(saved); } catch(e) {}
+            }
+            this.$nextTick(() => lucide.createIcons());
+        },
+
+        saveToStorage() {
+            localStorage.setItem('biruAdmin_articles', JSON.stringify(this.articles));
+        },
+
+        showNotif(message, type = 'success') {
+            this.notif = { show: true, message, type };
+            setTimeout(() => { this.notif.show = false; }, 3000);
+        },
+
+        autoSlug() {
+            if (!this.form.title) return;
+            this.form.slug = this.form.title
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .trim()
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-') + '.html';
+        },
+
+        newArticle() {
+            this.editIndex = null;
+            this.form = {
+                title: '', excerpt: '', body: '', category: '',
+                dateRaw: new Date().toISOString().split('T')[0],
+                readTime: 5, image: '', slug: ''
+            };
+        },
+
+        editArticle(idx) {
+            this.editIndex = idx;
+            const a = this.articles[idx];
+            this.form = {
+                title: a.title,
+                excerpt: a.excerpt,
+                body: a.body || '',
+                category: a.category,
+                dateRaw: a.dateRaw || new Date().toISOString().split('T')[0],
+                readTime: a.readTime || 5,
+                image: a.image || '',
+                slug: a.slug
+            };
+            this.tab = 'editor';
+            this.$nextTick(() => lucide.createIcons());
+        },
+
+        deleteArticle(idx) {
+            if (!confirm('Hapus artikel ini?')) return;
+            this.articles.splice(idx, 1);
+            this.saveToStorage();
+            this.showNotif('Artikel dihapus.');
+            this.$nextTick(() => lucide.createIcons());
+        },
+
+        saveArticle() {
+            if (!this.form.title || !this.form.excerpt || !this.form.category) {
+                this.showNotif('Judul, Ringkasan, dan Kategori wajib diisi!', 'error');
+                return;
+            }
+            if (!this.form.slug) this.autoSlug();
+
+            const article = {
+                id: this.editIndex !== null ? this.articles[this.editIndex].id : Date.now(),
+                title: this.form.title,
+                excerpt: this.form.excerpt,
+                body: this.form.body,
+                category: this.form.category,
+                date: this.formatDisplayDate(this.form.dateRaw),
+                dateRaw: this.form.dateRaw,
+                readTime: this.form.readTime,
+                image: this.form.image,
+                slug: this.form.slug
+            };
+
+            if (this.editIndex !== null) {
+                this.articles[this.editIndex] = article;
+            } else {
+                this.articles.unshift(article);
+            }
+
+            this.saveToStorage();
+            this.showNotif('Artikel berhasil disimpan! ✓');
+            this.$nextTick(() => lucide.createIcons());
+        },
+
+        importJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (Array.isArray(data)) {
+                        this.articles = data.map((a, i) => ({
+                            id: a.id || i + 1,
+                            title: a.title || '',
+                            excerpt: a.excerpt || '',
+                            body: a.body || '',
+                            category: a.category || 'Lainnya',
+                            date: a.date || '',
+                            dateRaw: a.dateRaw || '',
+                            readTime: a.readTime || 5,
+                            image: a.image || '',
+                            slug: a.slug || ''
+                        }));
+                        this.saveToStorage();
+                        this.showNotif(`${data.length} artikel berhasil diimport!`);
+                        this.$nextTick(() => lucide.createIcons());
+                    }
+                } catch(err) {
+                    this.showNotif('File JSON tidak valid!', 'error');
+                }
+            };
+            reader.readAsText(file);
+        },
+
+        formatDisplayDate(raw) {
+            if (!raw) return '';
+            const d = new Date(raw);
+            const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+            return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        },
+
+        getCategoryBadge(cat) {
+            const map = {
+                'Panduan': 'badge-panduan',
+                'Tips & Trik': 'badge-tips',
+                'Promo': 'badge-promo',
+                'Info': 'badge-info',
+                'Edukasi': 'badge-panduan',
+            };
+            return map[cat] || 'badge-lainnya';
+        },
+
+        insertTag(open, close) {
+            const ta = this.$refs.bodyEditor;
+            const start = ta.selectionStart;
+            const end = ta.selectionEnd;
+            const selected = ta.value.substring(start, end);
+            const newText = open + (selected || 'teks di sini') + close;
+            ta.value = ta.value.substring(0, start) + newText + ta.value.substring(end);
+            this.form.body = ta.value;
+            ta.focus();
+            ta.setSelectionRange(start + open.length, start + open.length + (selected || 'teks di sini').length);
+        },
+
+        insertCodeBlock() {
+            const snippet = '\n<div class="bg-blue-900 text-blue-100 p-6 rounded-2xl font-mono text-sm mb-6 relative overflow-hidden">\n    KODE_DI_SINI\n</div>\n';
+            const ta = this.$refs.bodyEditor;
+            const pos = ta.selectionStart;
+            ta.value = ta.value.substring(0, pos) + snippet + ta.value.substring(pos);
+            this.form.body = ta.value;
+        },
+
+        insertImage() {
+            const url = prompt('Masukkan URL gambar:');
+            if (!url) return;
+            const alt = prompt('Alt text / keterangan gambar (opsional):') || '';
+            const snippet = `\n<figure class="my-8">\n    <img src="${url}" alt="${alt}" class="w-full rounded-2xl object-cover shadow-md">\n    ${alt ? `<figcaption class="text-center text-sm text-slate-400 mt-2">${alt}</figcaption>` : ''}\n</figure>\n`;
+            const ta = this.$refs.bodyEditor;
+            const pos = ta.selectionStart;
+            ta.value = ta.value.substring(0, pos) + snippet + ta.value.substring(pos);
+            this.form.body = ta.value;
+            ta.focus();
+        },
+
+        downloadJSON() {
+            const exportData = this.articles.map(a => ({
+                id: a.id,
+                category: a.category,
+                title: a.title,
+                slug: a.slug,
+                excerpt: a.excerpt,
+                date: a.date,
+                image: a.image
+            }));
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'updates.json'; a.click();
+            URL.revokeObjectURL(url);
+            this.showNotif('updates.json berhasil didownload!');
+        },
+
+        downloadHTML() {
+            if (!this.form.title) { this.showNotif('Isi artikel dulu di tab Editor!', 'error'); return; }
+            const html = this.generateHTML();
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = this.form.slug || 'artikel.html'; a.click();
+            URL.revokeObjectURL(url);
+            this.showNotif('File HTML berhasil didownload!');
+        },
+
+        generateHTML() {
+            return buildArticleHTML(this.form, this.formatDisplayDate(this.form.dateRaw));
+        }
+    };
+}
+</script>
+
+<!-- Article HTML template stored safely in a textarea - immune to HTML parser issues -->
+<script type="text/template" id="articleTemplate">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{TITLE}} - Biru Digital</title>
+    <meta name="description" content="{{EXCERPT}}">
+    &lt;script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4">&lt;/script&gt;
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    &lt;script src="https://unpkg.com/lucide@latest">&lt;/script&gt;
+    &lt;style&gt;
+        body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        .article-content p  { margin-bottom: 1.5rem; line-height: 1.8; color: #475569; }
+        .article-content h2 { font-size: 1.5rem; font-weight: 700; color: #1e3a8a; margin-top: 2rem; margin-bottom: 1rem; }
+        .article-content ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1.5rem; color: #475569; }
+        .article-content li { margin-bottom: 0.4rem; }
+    &lt;/style&gt;
+</head>
+<body class="bg-slate-50">
+    <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 h-16 flex items-center px-6">
+        <div class="max-w-4xl mx-auto w-full flex justify-between items-center">
+            <a href="../index.html" class="flex items-center gap-2 text-blue-600 font-bold">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                <span>Kembali</span>
+            </a>
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+                    <i data-lucide="zap" class="w-5 h-5"></i>
+                </div>
+                <span class="font-extrabold text-blue-900 tracking-tighter">BIRU</span>
+            </div>
+        </div>
+    </nav>
+    <main class="pt-24 pb-20 px-6">
+        <article class="max-w-3xl mx-auto">
+            <header class="mb-10 text-center">
+                <span class="bg-blue-100 text-blue-600 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest mb-4 inline-block">{{CATEGORY}}</span>
+                <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-6">{{TITLE}}</h1>
+                <div class="flex items-center justify-center gap-4 text-slate-400 text-sm">
+                    <div class="flex items-center gap-1">
+                        <i data-lucide="calendar" class="w-4 h-4"></i>
+                        <span>{{DATE}}</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i data-lucide="clock" class="w-4 h-4"></i>
+                        <span>{{READTIME}} Menit Baca</span>
+                    </div>
+                </div>
+            </header>
+            <div class="rounded-[2.5rem] overflow-hidden shadow-2xl mb-12 shadow-blue-100">
+                <img src="{{IMAGE}}" alt="{{TITLE}}" class="w-full h-auto object-cover">
+            </div>
+            <div class="article-content text-lg">
+                {{BODY}}
+            </div>
+            <footer class="mt-16 pt-8 border-t border-slate-100">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm font-bold text-slate-400 uppercase">Share:</span>
+                        <button class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition"><i data-lucide="facebook" class="w-5 h-5"></i></button>
+                        <button class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition"><i data-lucide="twitter" class="w-5 h-5"></i></button>
+                        <button class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition"><i data-lucide="send" class="w-5 h-5"></i></button>
+                    </div>
+                    <a href="../index.html#updates" class="bg-blue-600 text-white px-6 py-3 rounded-2xl font-bold shadow-lg shadow-blue-200">Baca Artikel Lainnya</a>
+                </div>
+            </footer>
+        </article>
+    </main>
+    <footer class="bg-slate-900 py-10 text-center text-slate-500 text-xs">
+        &copy; {{YEAR}} BIRU DIGITAL TECHNOLOGY. ALL RIGHTS RESERVED.
+    </footer>
+    &lt;script&gt lucide.createIcons();&lt;/script&gt;
+</body>
+</html>
+</script>
+
+<script>
+function buildArticleHTML(form, date) {
+    const tpl = document.getElementById('articleTemplate').innerHTML;
+    const image = form.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1200&auto=format&fit=crop';
+    return tpl
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .replaceAll('{{TITLE}}',    form.title)
+        .replaceAll('{{EXCERPT}}',  form.excerpt)
+        .replaceAll('{{CATEGORY}}', form.category)
+        .replaceAll('{{DATE}}',     date)
+        .replaceAll('{{READTIME}}', form.readTime)
+        .replaceAll('{{IMAGE}}',    image)
+        .replaceAll('{{BODY}}',     form.body)
+        .replaceAll('{{YEAR}}',     new Date().getFullYear());
+}
+</script>
+</body>
+</html>

@@ -182,7 +182,6 @@
                     console.log('test');
                     try {
                         this.prices = await PriceService.fetchPrices();
-                        setTimeout(() => loading = false, 2000);
                     } catch (err) {
                         console.error("Gagal memuat harga:", err);
                     } finally {
