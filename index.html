@@ -149,7 +149,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <template x-for="post in updates" :key="post.id">
-                    <a :href="'/content/' + post.slug" class="group flex flex-col md:flex-row gap-6 p-4 rounded-[2rem] border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all duration-500">
+                    <a :href="'/kacangtanah/content/' + post.slug" class="group flex flex-col md:flex-row gap-6 p-4 rounded-[2rem] border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all duration-500">
                         <div class="w-full md:w-48 h-48 rounded-2xl overflow-hidden flex-shrink-0 shadow-lg">
                             <img :src="post.image" :alt="post.title" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                         </div>
